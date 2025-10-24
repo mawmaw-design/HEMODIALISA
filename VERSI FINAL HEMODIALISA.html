@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentasi Mudah: Mesin Cuci Darah (Hemodialisis)</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Share+Tech+Mono&display=swap");
+
+      :root {
+        /* Tema Hemodialisis (Darah) */
+        --darah-kotor: #8a0707;
+        --darah-bersih: #ff1e1e;
+        --bg-dark: #121212;
+        --text-light: #e0e0e0;
+        --text-secondary: #b0b0b0;
+        --accent-tech: var(--darah-bersih);
+        --border-tech: rgba(255, 30, 30, 0.3);
+        --blood-darker: #5a0505; /* Warna darah kotor yang lebih gelap */
+        --blood-lighter: #cc0000; /* Warna darah bersih yang sedikit lebih terang */
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", sans-serif;
+        background-color: var(--bg-dark);
+        color: var(--text-light);
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+
+      #presentation-container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 30px 40px;
+        box-sizing: border-box;
+        text-align: center;
+        opacity: 0;
+        transform: scale(0.95);
+        transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+        background: linear-gradient(
+          135deg,
+          rgba(18, 18, 18, 0.98),
+          rgba(30, 0, 0, 0.95)
+        );
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .slide.exit {
+        opacity: 0;
+        transform: scale(1.05);
+      }
+
+      .slide-title {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--accent-tech);
+        margin-bottom: 5px;
+        text-shadow: 0 0 10px var(--accent-tech);
+      }
+
+      .slide-subtitle {
+        font-size: 1.2rem;
+        font-weight: 300;
+        color: var(--text-secondary);
+        max-width: 900px;
+        margin-bottom: 20px;
+      }
+
+      .slide-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        max-width: 1200px;
+        flex-grow: 1;
+      }
+
+      .content-section-title {
+        width: 100%;
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--accent-tech);
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-tech);
+        padding-bottom: 10px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        width: 100%;
+      }
+
+      .info-card {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border-tech);
+        padding: 20px;
+        border-radius: 8px;
+        text-align: left;
+      }
+
+      .info-card h4 {
+        font-family: "Share Tech Mono", monospace;
+        color: var(--accent-tech);
+        font-size: 1.2rem;
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+
+      .info-card p,
+      .info-card li {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: var(--text-secondary);
+      }
+      .info-card strong {
+        color: var(--text-light);
+      }
+      .info-card .analogy {
+        font-style: italic;
+        color: var(--accent-tech);
+        border-left: 3px solid var(--accent-tech);
+        padding-left: 10px;
+        margin-top: 10px;
+      }
+
+      ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      /* Diagram Styles */
+      .diagram-container {
+        width: 100%;
+        height: 100%;
+        max-height: 60vh;
+        display: flex;
+        gap: 20px;
+      }
+      .diagram {
+        flex: 1;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border-tech);
+        border-radius: 5px;
+        padding: 10px;
+      }
+      .diagram h4 {
+        text-align: center;
+        color: var(--accent-tech);
+        margin: 0 0 10px 0;
+      }
+      .diagram svg {
+        width: 100%;
+        height: 90%;
+      }
+
+      /* Fullscreen Button Style */
+      #fullscreen-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 101;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-tech);
+        color: var(--text-light);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      #fullscreen-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      #fullscreen-btn svg {
+        display: block;
+      }
+
+      /* CSS untuk Animasi Nama */
+      #name-container {
+        position: relative; /* Penting untuk positioning pseudo-element */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        z-index: 10; /* Pastikan nama di atas background */
+        background: transparent;
+      }
+      .name-entry {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 2.8rem;
+        color: var(--text-light);
+        margin: 15px;
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+      .name-entry.visible {
+        opacity: 1;
+      }
+      .name-entry .cursor {
+        display: inline-block;
+        width: 10px;
+        height: 2.5rem;
+        background-color: var(--accent-tech);
+        animation: blink 0.7s infinite;
+      }
+      .name-entry.glitching {
+        animation: glitch-anim 0.4s ease-in-out;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      @keyframes glitch-anim {
+        0% {
+          opacity: 1;
+          transform: skewX(0);
+        }
+        25% {
+          opacity: 0.7;
+          transform: skewX(-15deg);
+          text-shadow: 0 0 5px red;
+        }
+        50% {
+          opacity: 1;
+          transform: skewX(15deg);
+          text-shadow: 0 0 5px blue;
+        }
+        75% {
+          opacity: 0.7;
+          transform: skewX(-10deg);
+        }
+        100% {
+          opacity: 1;
+          transform: skewX(0);
+        }
+      }
+
+      /* --- BACKGROUND ANIMASI SLIDE 1 BARU --- */
+      .slide-intro-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 1; /* Di belakang nama */
+      }
+
+      .blood-stream {
+        position: absolute;
+        width: 50%; /* Setengah lebar */
+        height: 100%;
+        opacity: 0.6;
+        filter: blur(10px); /* Efek kabur agar terlihat seperti cairan */
+        animation: flow-blood 10s linear infinite;
+      }
+
+      .blood-stream.dirty {
+        left: 0;
+        background: linear-gradient(
+          to right,
+          var(--blood-darker),
+          var(--darah-kotor)
+        );
+        transform: translateX(0%); /* Awal animasi */
+        animation: flow-blood-dirty 15s linear infinite;
+      }
+
+      .blood-stream.clean {
+        right: 0;
+        background: linear-gradient(
+          to left,
+          var(--blood-lighter),
+          var(--darah-bersih)
+        );
+        transform: translateX(0%); /* Awal animasi */
+        animation: flow-blood-clean 15s linear infinite;
+      }
+
+      @keyframes flow-blood-dirty {
+        0% {
+          transform: translateX(0%);
+        }
+        100% {
+          transform: translateX(20%);
+        } /* Mengalir ke kanan */
+      }
+
+      @keyframes flow-blood-clean {
+        0% {
+          transform: translateX(0%);
+        }
+        100% {
+          transform: translateX(-20%);
+        } /* Mengalir ke kiri */
+      }
+    </style>
+  </head>
+  <body>
+    <button id="fullscreen-btn" title="Toggle Fullscreen">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+        ></path>
+      </svg>
+    </button>
+
+    <div id="presentation-container">
+      <!-- Slide 1: Judul (BARU) -->
+      <div class="slide active" id="slide1">
+        <div class="slide-intro-bg">
+          <div class="blood-stream dirty"></div>
+          <div class="blood-stream clean"></div>
+        </div>
+        <div id="name-container">
+          <!-- Nama akan diisi oleh JavaScript -->
+        </div>
+      </div>
+
+      <!-- Slide 1: Fungsi Alat (digeser ke slide2) -->
+      <div class="slide" id="slide2">
+        <h1 class="slide-title">Alat Ini Buat Apa Sih? (Fungsi)</h1>
+        <p class="slide-subtitle">
+          Memahami Fungsi Mesin Hemodialisis (Cuci Darah) dengan Bahasa Santai
+        </p>
+        <div class="slide-content">
+          <div class="info-card" style="width: 80%; text-align: left">
+            <h4>Fungsi Utamanya: Menggantikan Ginjal</h4>
+            <p>
+              Singkatnya, alat ini adalah <strong>"Ginjal Buatan"</strong> di
+              luar tubuh.
+            </p>
+            <p>
+              Pasien yang ginjalnya rusak (gagal ginjal) tidak bisa membuang
+              'sampah' dan kelebihan air dari darah mereka. Alat ini mengambil
+              alih 3 tugas utama ginjal:
+            </p>
+            <ul
+              style="
+                list-style-type: square;
+                padding-left: 20px;
+                margin-top: 10px;
+              "
+            >
+              <li>
+                <strong>Menyaring Sampah:</strong> Membuang racun seperti urea
+                dan kreatinin.
+              </li>
+              <li>
+                <strong>Membuang Air:</strong> Mengeluarkan kelebihan cairan
+                yang bikin bengkak (edema).
+              </li>
+              <li>
+                <strong>Menyeimbangkan Elektrolit:</strong> Menjaga kadar
+                mineral (kalium, natrium) tetap normal.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: Prinsip Kerja (Difusi) (digeser ke slide3) -->
+      <div class="slide" id="slide3">
+        <h2 class="slide-title">Prinsip Kerja 1: Membuang Racun (Difusi)</h2>
+        <p class="slide-subtitle">
+          Bagaimana racun bisa pindah dari darah ke cairan pembersih?
+        </p>
+        <div class="slide-content">
+          <div class="info-grid" style="grid-template-columns: 1fr 1fr">
+            <div class="info-card">
+              <h4>Filter Ajaib (Dialiser)</h4>
+              <p>
+                Darah pasien dan cairan pembersih (dialisat) dialirkan ke dalam
+                sebuah filter bernama <strong>Dialiser</strong>. Di dalamnya,
+                darah dan dialisat *tidak pernah bercampur*.
+              </p>
+              <p>
+                Mereka hanya "numpang lewat" bersebelahan, dipisahkan oleh
+                saringan super tipis (membran semipermeabel).
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Perpindahan Alami (Difusi)</h4>
+              <p>
+                Darah pasien (konsentrasi racun tinggi) bertemu dialisat
+                (konsentrasi racun nol). Secara alami, racun akan pindah dari
+                tempat ramai (darah) ke tempat sepi (dialisat) sampai seimbang.
+              </p>
+              <p class="analogy">
+                <strong>Analogi: Saringan Teh</strong><br />Bayangkan kantong
+                teh (darah penuh racun) dicelup ke air panas (dialisat bersih).
+                Sari teh (racun) akan keluar mengisi air, tapi ampas teh (sel
+                darah) tetap di dalam kantong.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Prinsip Kerja (Ultrafiltrasi) (digeser ke slide4) -->
+      <div class="slide" id="slide4">
+        <h2 class="slide-title">
+          Prinsip Kerja 2: Membuang Air (Ultrafiltrasi)
+        </h2>
+        <p class="slide-subtitle">
+          Selain racun, kelebihan air di tubuh pasien juga harus dibuang.
+        </p>
+        <div class="slide-content">
+          <div class="info-card" style="width: 80%; text-align: left">
+            <h4>Menggunakan Tekanan</h4>
+            <p>
+              Mesin HD menciptakan <strong>perbedaan tekanan</strong> di dalam
+              dialiser. Ini dilakukan dengan cara "menyedot" cairan dialisat di
+              satu sisi, sementara darah di sisi lain didorong oleh pompa.
+            </p>
+            <p>
+              Tekanan ini memaksa kelebihan air di dalam darah untuk "terperas"
+              keluar menembus membran saringan, lalu ikut terbuang bersama
+              dialisat kotor.
+            </p>
+            <p class="analogy">
+              <strong>Analogi: Memeras Spons Basah</strong><br />Darah pasien
+              itu ibarat spons yang basah kuyup. Proses ultrafiltrasi adalah
+              "tangan" yang memeras spons itu, sehingga kelebihan airnya keluar.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Alur Kerja (Gambaran Besar) (digeser ke slide5) -->
+      <div class="slide" id="slide5">
+        <h2 class="slide-title">Alur Kerja Sistem (Gambaran Besar)</h2>
+        <p class="slide-subtitle">
+          Mesin ini pada dasarnya menjalankan dua sirkuit (loop) yang bertemu di
+          satu titik.
+        </p>
+        <div class="slide-content">
+          <div class="diagram-container">
+            <div class="diagram" style="flex: 2">
+              <h4>Diagram Konsep Alur Kerja</h4>
+              <svg viewBox="0 0 600 400">
+                <style>
+                  .box {
+                    fill: #1a1a2a;
+                    stroke: var(--border-tech);
+                    stroke-width: 2;
+                  }
+                  .box-blood {
+                    stroke: var(--darah-kotor);
+                  }
+                  .box-dialysate {
+                    stroke: #00bfff;
+                  }
+                  .box-filter {
+                    stroke: var(--darah-bersih);
+                    stroke-width: 3;
+                  }
+                  .txt {
+                    font-family: "Share Tech Mono", monospace;
+                    fill: var(--text-light);
+                    font-size: 16px;
+                    text-anchor: middle;
+                  }
+                  .arrow-blood {
+                    fill: none;
+                    stroke: var(--darah-kotor);
+                    stroke-width: 2.5;
+                    marker-end: url(#arrowhead-blood);
+                  }
+                  .arrow-clean {
+                    fill: none;
+                    stroke: var(--darah-bersih);
+                    stroke-width: 2.5;
+                    marker-end: url(#arrowhead-clean);
+                  }
+                  .arrow-d {
+                    fill: none;
+                    stroke: #00bfff;
+                    stroke-width: 2;
+                    marker-end: url(#arrowhead-d);
+                    stroke-dasharray: 5, 3;
+                  }
+                </style>
+                <defs>
+                  <marker
+                    id="arrowhead-blood"
+                    viewBox="0 0 10 10"
+                    refX="8"
+                    refY="5"
+                    markerWidth="6"
+                    markerHeight="6"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#8A0707" />
+                  </marker>
+                  <marker
+                    id="arrowhead-clean"
+                    viewBox="0 0 10 10"
+                    refX="8"
+                    refY="5"
+                    markerWidth="6"
+                    markerHeight="6"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#FF1E1E" />
+                  </marker>
+                  <marker
+                    id="arrowhead-d"
+                    viewBox="0 0 10 10"
+                    refX="8"
+                    refY="5"
+                    markerWidth="6"
+                    markerHeight="6"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#00BFFF" />
+                  </marker>
+                </defs>
+
+                <rect
+                  class="box box-blood"
+                  x="50"
+                  y="175"
+                  width="100"
+                  height="50"
+                  rx="5"
+                />
+                <text class="txt" x="100" y="205">PASIEN</text>
+
+                <rect
+                  class="box box-filter"
+                  x="250"
+                  y="175"
+                  width="100"
+                  height="50"
+                  rx="5"
+                />
+                <text class="txt" x="300" y="205">DIALISER</text>
+                <text
+                  class="txt"
+                  x="300"
+                  y="160"
+                  style="font-size: 12px; fill: white"
+                >
+                  (Tempat Bertemu)
+                </text>
+
+                <rect
+                  class="box box-dialysate"
+                  x="450"
+                  y="50"
+                  width="100"
+                  height="50"
+                  rx="5"
+                />
+                <text class="txt" x="500" y="80">Mesin</text>
+                <text class="txt" x="500" y="100" style="font-size: 12px">
+                  (Bikin Dialisat)
+                </text>
+                <rect
+                  class="box box-dialysate"
+                  x="450"
+                  y="300"
+                  width="100"
+                  height="50"
+                  rx="5"
+                />
+                <text class="txt" x="500" y="330">Pembuangan</text>
+
+                <!-- Blood Loop -->
+                <path class="arrow-blood" d="M 150 190 L 250 190" />
+                <text class="txt" x="200" y="185" style="font-size: 12px">
+                  Darah Kotor
+                </text>
+                <path class="arrow-clean" d="M 250 210 L 150 210" />
+                <text class="txt" x="200" y="225" style="font-size: 12px">
+                  Darah Bersih
+                </text>
+
+                <!-- Dialysate Loop -->
+                <path class="arrow-d" d="M 500 100 L 500 180 L 350 180" />
+                <path class="arrow-d" d="M 350 220 L 500 220 L 500 300" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5: Komponen Sirkuit Darah (digeser ke slide6) -->
+      <div class="slide" id="slide6">
+        <h2 class="slide-title">Detail Komponen (Sirkuit Darah)</h2>
+        <p class="slide-subtitle">
+          Komponen yang berinteraksi langsung dengan darah pasien (Sirkuit
+          Ekstrakorporeal).
+        </p>
+        <div class="slide-content">
+          <div class="info-grid" style="grid-template-columns: 1fr 1fr">
+            <div class="info-card">
+              <h4>Pompa Darah (Blood Pump)</h4>
+              <p>
+                <strong>Fungsi:</strong> "Jantung" dari mesin ini. Pompa jenis
+                peristaltik yang "mengurut" selang untuk mendorong darah pasien
+                masuk ke dialiser. Teknisi bisa mengatur kecepatannya (misal 250
+                mL/menit).
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Suntikan Heparin (Obat Anti Beku)</h4>
+              <p>
+                <strong>Fungsi:</strong> Darah akan membeku jika keluar dari
+                tubuh. Alat ini (syringe pump) menyuntikkan obat anti beku
+                (heparin) sedikit demi sedikit ke selang darah agar aliran tetap
+                lancar.
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Sensor Gelembung Udara (Air Detector)</h4>
+              <p>
+                <strong>Fungsi:</strong> Komponen keamanan PALING VITAL.
+                Menggunakan ultrasonik (mirip USG mini) untuk memindai selang
+                darah. Jika ada 1 gelembung udara kecil saja terdeteksi, alat
+                ini akan...
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Klem Vena (Venous Clamp)</h4>
+              <p>
+                <strong>Fungsi:</strong> ...langsung memicu Klem Vena untuk
+                "menjepit" selang darah. Ini adalah "gerbang" darurat yang
+                mencegah gelembung udara masuk ke tubuh pasien (emboli udara
+                bisa fatal).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: Komponen Sirkuit Dialisat (digeser ke slide7) -->
+      <div class="slide" id="slide7">
+        <h2 class="slide-title">Detail Komponen (Sirkuit Dialisat)</h2>
+        <p class="slide-subtitle">
+          Komponen di dalam mesin yang menyiapkan "cairan pembersih" (Dialisat).
+        </p>
+        <div class="slide-content">
+          <div class="info-grid" style="grid-template-columns: 1fr 1fr">
+            <div class="info-card">
+              <h4>Sistem Pencampur (Proportioning)</h4>
+              <p>
+                <strong>Fungsi:</strong> "Dapur" yang meracik dialisat. Mesin
+                ini mencampur air murni (dari RO) dengan cairan konsentrat (asam
+                & bikarbonat) dengan rasio yang sangat presisi (misal 1:34).
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Sensor Konduktivitas</h4>
+              <p>
+                <strong>Fungsi:</strong> "Lidah" pencicip. Alat ini mengukur
+                daya hantar listrik cairan dialisat. Jika racikannya pas,
+                konduktivitasnya akan pas. Jika salah campur, alat akan alarm.
+                Ini adalah sensor utama untuk akurasi racikan.
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Pemanas (Heater)</h4>
+              <p>
+                <strong>Fungsi:</strong> Menghangatkan cairan dialisat hingga
+                sama dengan suhu tubuh pasien (sekitar 37°C). Ini penting agar
+                pasien tidak kedinginan (hipotermia) selama 4 jam dicuci
+                darahnya.
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Sensor Bocor Darah (Blood Leak Detector)</h4>
+              <p>
+                <strong>Fungsi:</strong> "Mata" pengawas di jalur pembuangan.
+                Alat ini (sensor optik) melihat cairan dialisat kotor. Jika ada
+                warna merah (darah) terdeteksi, berarti saringan dialiser
+                robek/bocor. Mesin akan alarm.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7: Otak Alat (MCU) (digeser ke slide8) -->
+      <div class="slide" id="slide8">
+        <h2 class="slide-title">Otak Alat (Mikrokontroler)</h2>
+        <p class="slide-subtitle">
+          Pusat kendali yang memastikan semua berjalan aman dan sesuai rencana.
+        </p>
+        <div class="slide-content">
+          <div class="info-grid" style="grid-template-columns: 1fr 1fr">
+            <div class="info-card">
+              <h4>Input (Mata & Telinga)</h4>
+              <p>
+                Otak ini terus-menerus "mendengar" laporan dari semua sensor:
+              </p>
+              <ul
+                style="
+                  list-style-type: square;
+                  padding-left: 20px;
+                  margin-top: 10px;
+                "
+              >
+                <li>Sensor Tekanan (Vena & Arteri)</li>
+                <li>Sensor Gelembung Udara</li>
+                <li>Sensor Konduktivitas</li>
+                <li>Sensor Suhu</li>
+                <li>Sensor Bocor Darah</li>
+                <li>Input dari Tombol (settingan Perawat)</li>
+              </ul>
+            </div>
+            <div class="info-card">
+              <h4>Output (Tangan & Kaki)</h4>
+              <p>
+                Berdasarkan input tadi, Otak ini "memerintahkan" aktuator untuk
+                bekerja:
+              </p>
+              <ul
+                style="
+                  list-style-type: square;
+                  padding-left: 20px;
+                  margin-top: 10px;
+                "
+              >
+                <li>Mengatur kecepatan Pompa Darah (PWM)</li>
+                <li>Mengatur Pompa Pencampur</li>
+                <li>Menyalakan/Mematikan Pemanas</li>
+                <li>Menjalankan Pompa Heparin</li>
+                <li>
+                  <strong>Logika Darurat:</strong> Jika Sensor Gelembung lapor
+                  "ADA GELEMBUNG!", Otak langsung teriak: "MATIKAN POMPA DARAH!
+                  TUTUP KLEM VENA! BUNYIKAN ALARM!"
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 8: Flowchart Sederhana (digeser ke slide9) -->
+      <div class="slide" id="slide9">
+        <h2 class="slide-title">Alur Kerja (Flowchart Sederhana)</h2>
+        <p class="slide-subtitle">
+          Urutan kerja alat dari awal sampai akhir sesi terapi.
+        </p>
+        <div class="slide-content">
+          <div class="diagram-container">
+            <div class="diagram" style="padding: 20px">
+              <svg viewBox="0 0 800 300">
+                <style>
+                  .start {
+                    fill: #003300;
+                    stroke: #00cc00;
+                  }
+                  .proc {
+                    fill: #1a1a2a;
+                    stroke: var(--accent-tech);
+                  }
+                  .cond {
+                    fill: #4d0000;
+                    stroke: var(--darah-bersih);
+                  }
+                  .io {
+                    fill: #330033;
+                    stroke: #cc00cc;
+                  }
+                  .flow-txt {
+                    font-family: "Share Tech Mono", monospace;
+                    font-size: 11px;
+                    fill: white;
+                    text-anchor: middle;
+                  }
+                  .flow-arrow {
+                    fill: none;
+                    stroke: #ccc;
+                    stroke-width: 1.5;
+                    marker-end: url(#arrowhead);
+                  }
+                </style>
+                <defs>
+                  <marker
+                    id="arrowhead"
+                    viewBox="0 0 10 10"
+                    refX="8"
+                    refY="5"
+                    markerWidth="6"
+                    markerHeight="6"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#ccc" />
+                  </marker>
+                </defs>
+
+                <ellipse class="start" cx="70" cy="150" rx="60" ry="20" />
+                <text class="flow-txt" x="70" y="154">Mulai</text>
+                <path class="flow-arrow" d="M 130 150 L 160 150" />
+                <rect
+                  class="proc"
+                  x="160"
+                  y="135"
+                  width="100"
+                  height="30"
+                  rx="5"
+                />
+                <text class="flow-txt" x="210" y="154">Persiapan Alat</text>
+                <path class="flow-arrow" d="M 260 150 L 290 150" />
+                <rect
+                  class="io"
+                  x="290"
+                  y="135"
+                  width="100"
+                  height="30"
+                  rx="5"
+                />
+                <text class="flow-txt" x="340" y="154">Pasang Pasien</text>
+                <path class="flow-arrow" d="M 390 150 L 420 150" />
+                <rect
+                  class="proc"
+                  x="420"
+                  y="135"
+                  width="100"
+                  height="30"
+                  rx="5"
+                />
+                <text class="flow-txt" x="470" y="147">PROSES CUCI</text>
+                <text class="flow-txt" x="470" y="161">(Monitor Terus)</text>
+                <path class="flow-arrow" d="M 520 150 L 550 150" />
+
+                <path
+                  d="M 615 125 L 580 150 L 615 175 L 650 150 Z"
+                  class="cond"
+                />
+                <text class="flow-txt" x="615" y="154">Waktu Selesai?</text>
+                <path class="flow-arrow" d="M 650 150 L 680 150" />
+
+                <!-- Loop Back -->
+                <path
+                  class="flow-arrow"
+                  d="M 615 125 L 615 80 L 470 80 L 470 135"
+                />
+                <text class="flow-txt" x="540" y="95">Tidak</text>
+
+                <!-- End Branch -->
+                <rect
+                  class="proc"
+                  x="680"
+                  y="135"
+                  width="100"
+                  height="30"
+                  rx="5"
+                />
+                <text class="flow-txt" x="730" y="147">Kembalikan Darah</text>
+                <text class="flow-txt" x="730" y="161">(Rinse Back)</text>
+                <path
+                  class="flow-arrow"
+                  d="M 780 150 L 780 250 L 70 250 L 70 170"
+                />
+                <ellipse class="start" cx="70" cy="270" rx="60" ry="20" />
+                <text class="flow-txt" x="70" y="274">Selesai</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9: Efek Samping & Risiko (digeser ke slide10) -->
+      <div class="slide" id="slide10">
+        <h2 class="slide-title">Sisi Lain: Efek Samping & Risiko</h2>
+        <p class="slide-subtitle">
+          Kenapa teknisi harus selalu siaga? Karena ini yang bisa terjadi.
+        </p>
+        <div class="slide-content">
+          <div class="info-grid" style="grid-template-columns: 1fr 1fr">
+            <div class="info-card">
+              <h4>Hipotensi (Tekanan Darah Drop)</h4>
+              <p>
+                <strong>Penyebab:</strong> Paling umum terjadi. Cairan ditarik
+                terlalu cepat atau terlalu banyak. <br /><strong
+                  >Peran Teknisi:</strong
+                >
+                Alarm tekanan darah akan bunyi. Pastikan sensor tekanan
+                terkalibrasi dengan benar.
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Kram Otot</h4>
+              <p>
+                <strong>Penyebab:</strong> Efek dari penarikan cairan dan
+                pergeseran elektrolit yang cepat. <br /><strong
+                  >Peran Teknisi:</strong
+                >
+                Memastikan sensor konduktivitas akurat, sehingga racikan
+                dialisat tidak salah.
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Emboli Udara (FATAL)</h4>
+              <p>
+                <strong>Penyebab:</strong> Ada udara di selang darah yang masuk
+                ke tubuh pasien. <br /><strong>Peran Teknisi:</strong> Ini
+                adalah KEGAGALAN ALAT. Pastikan
+                <strong>Sensor Gelembung Udara</strong> dan
+                <strong>Klem Vena</strong> berfungsi 100%. Wajib diuji saat
+                kalibrasi rutin!
+              </p>
+            </div>
+            <div class="info-card">
+              <h4>Kebocoran Darah</h4>
+              <p>
+                <strong>Penyebab:</strong> Saringan (dialiser) robek, darah
+                bocor ke cairan dialisat. <br /><strong>Peran Teknisi:</strong>
+                Pastikan <strong>Sensor Bocor Darah (BLD)</strong> sensitif dan
+                berfungsi. Jika alarm bunyi, mesin harus segera dihentikan.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 10: Peran Teknisi (digeser ke slide11) -->
+      <div class="slide" id="slide11">
+        <h2 class="slide-title">Jadi, Peran Teknisi Elektromedis Apa?</h2>
+        <p class="slide-subtitle">
+          Kita adalah "Penjaga Gawang" Keamanan dan Akurasi Mesin.
+        </p>
+        <div class="slide-content">
+          <div class="info-card" style="width: 80%; text-align: left">
+            <p>
+              Perawat mengoperasikan alat, tapi kita yang memastikan alat itu
+              <strong>LAYAK</strong> dan <strong>AMAN</strong> dipakai.
+            </p>
+            <ul
+              style="
+                list-style-type: square;
+                padding-left: 20px;
+                margin-top: 10px;
+              "
+            >
+              <li>
+                <strong>Kalibrasi:</strong> Memastikan sensor konduktivitas,
+                sensor tekanan, dan sensor suhu membaca angka yang akurat. Kalau
+                ngaco, terapi bisa gagal atau bahaya.
+              </li>
+              <li>
+                <strong>Perawatan (Preventive Maintenance):</strong> Mengganti
+                filter, membersihkan pompa, dan yang terpenting:
+                <strong>Menguji semua sensor keamanan</strong> (Gelembung Udara,
+                Bocor Darah, Klem).
+              </li>
+              <li>
+                <strong>Perbaikan (Troubleshooting):</strong> Jika ada alarm
+                "Conductivity Error" atau "Air Detector Failure", kitalah yang
+                harus melacak masalahnya. Apakah sensornya rusak? Kabelnya
+                putus? Atau board MCU-nya yang bermasalah?
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentSlide = 1;
+      const slides = document.querySelectorAll(".slide");
+      const totalSlides = slides.length;
+      const fullscreenBtn = document.getElementById("fullscreen-btn");
+
+      let isAnimating = true;
+      const names = [
+        { full: "Dwi Sekar Renggowati", short: "Sekar [2040124012]" },
+        { full: "Muhammad Sulthan", short: "Sulthan[2040124028]" },
+        { full: "Nazilla Ilma", short: "Zilla [2040124030]" },
+        { full: "Rabbil Imam Samudera", short: "Rabbil [2040124033]" },
+        { full: "Maulana Alfi Zamriza", short: "Alfi [2040124024]" },
+      ];
+      const nameContainer = document.getElementById("name-container");
+
+      function pause(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      async function typeName(element, text) {
+        return new Promise((resolve) => {
+          let i = 0;
+          element.innerHTML = '<span class="cursor"></span>';
+          const span = document.createElement("span");
+          element.prepend(span);
+
+          const interval = setInterval(() => {
+            if (i < text.length) {
+              span.textContent += text.charAt(i);
+              i++;
+            } else {
+              clearInterval(interval);
+              resolve();
+            }
+          }, 100);
+        });
+      }
+
+      async function glitchToShort(element, shortName) {
+        return new Promise(async (resolve) => {
+          element.classList.add("glitching");
+          await pause(400);
+
+          const span = element.querySelector("span:first-child");
+          if (span) {
+            span.textContent = shortName;
+          } else {
+            element.textContent = shortName;
+          }
+
+          element.classList.remove("glitching");
+
+          const cursor = element.querySelector(".cursor");
+          if (cursor) cursor.style.display = "none";
+
+          resolve();
+        });
+      }
+
+      async function runNameAnimation() {
+        for (const name of names) {
+          const nameEl = document.createElement("div");
+          nameEl.className = "name-entry";
+          nameContainer.appendChild(nameEl);
+          nameEl.classList.add("visible");
+
+          await typeName(nameEl, name.full);
+          await pause(500);
+          await glitchToShort(nameEl, name.short);
+          await pause(800);
+        }
+        isAnimating = false;
+      }
+
+      document.addEventListener("DOMContentLoaded", runNameAnimation);
+
+      function showSlide(slideNumber) {
+        if (
+          slideNumber < 1 ||
+          slideNumber > totalSlides ||
+          slideNumber === currentSlide
+        )
+          return;
+        const currentSlideElement = document.getElementById(
+          `slide${currentSlide}`
+        );
+        const nextSlideElement = document.getElementById(`slide${slideNumber}`);
+        currentSlideElement.classList.add("exit");
+        currentSlideElement.classList.remove("active");
+        setTimeout(() => {
+          nextSlideElement.classList.remove("exit");
+          nextSlideElement.classList.add("active");
+          currentSlide = slideNumber;
+        }, 300);
+      }
+
+      function toggleFullscreen() {
+        if (
+          !document.fullscreenElement &&
+          !document.mozFullScreenElement &&
+          !document.webkitFullscreenElement &&
+          !document.msFullscreenElement
+        ) {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+          } else if (document.documentElement.mozRequestFullScreen) {
+            document.documentElement.mozRequestFullScreen();
+          } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen();
+          } else if (document.documentElement.msRequestFullscreen) {
+            document.documentElement.msRequestFullscreen();
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          } else if (document.documentElement.msExitFullscreen) {
+            document.documentElement.msExitFullscreen();
+          }
+        }
+      }
+      fullscreenBtn.addEventListener("click", toggleFullscreen);
+
+      document.addEventListener("keydown", (event) => {
+        if (isAnimating) return;
+
+        if (event.key === "ArrowLeft") {
+          showSlide(currentSlide - 1);
+        } else if (event.key === "ArrowRight") {
+          showSlide(currentSlide + 1);
+        }
+      });
+    </script>
+  </body>
+</html>
